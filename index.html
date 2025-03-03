@@ -370,3 +370,646 @@
   </script>
 </body>
 </html>
+<br>
+<br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iTab Reaction System</title>
+  <style>
+    /* Basic page styling */
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    .demo-content {
+      position: relative; /* Added for absolute positioning of code button */
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Code Button */
+    .code-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: #007bff;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      font-size: 18px;
+      transition: background-color 0.2s;
+    }
+    
+    .code-button:hover {
+      background: #0056b3;
+    }
+
+    /* Code Popup */
+    .code-popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 10001;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .code-popup-content {
+      background: white;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .code-popup-header {
+      padding: 15px 20px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .code-popup-header h3 {
+      margin: 0;
+      color: #333;
+    }
+
+    .code-popup-close {
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .code-popup-body {
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .code-block {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 15px;
+      margin: 15px 0;
+      overflow-x: auto;
+      max-height: 400px;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .copy-code-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .copy-code-btn:hover {
+      background: #218838;
+    }
+
+    /* iTab Bubble Styles */
+    .itab-bubble {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 100px;
+      height: 50px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 9999;
+    }
+
+    .itab-icon {
+      cursor: pointer;
+      font-size: 24px;
+      padding: 5px;
+      border-radius: 50%;
+    }
+
+    .itab-icon:hover {
+      background: #f0f0f0;
+    }
+
+    /* Popup Styles */
+    .itab-popup {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 250px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 9999;
+    }
+
+    .itab-popup h4 {
+      margin-top: 0;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .itab-popup p {
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    /* Reaction Buttons */
+    .itab-reaction-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px 12px;
+      margin: 8px 0;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .itab-reaction-btn:hover {
+      background: #f0f0f0;
+    }
+
+    /* Close Button */
+    .itab-close {
+      color: #0066cc;
+      text-decoration: underline;
+      cursor: pointer;
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    /* Confirmation Message */
+    .itab-confirmation {
+      position: fixed;
+      bottom: 75px;
+      right: 20px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      z-index: 10000;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sample content to demonstrate iTab -->
+  <div class="demo-content">
+    <!-- Code Button -->
+    <div class="code-button" id="codeButton">&lt;/&gt;</div>
+    
+    <h1>iTab Reaction System Demo</h1>
+    <p>This page demonstrates the iTab floating reaction system.</p>
+    <p>Try clicking on the bubble in the bottom-right corner:</p>
+    <ul>
+      <li>Click the 👍 icon to leave a reaction</li>
+      <li>Click the ℹ️ icon to see reaction statistics</li>
+    </ul>
+  </div>
+
+  <!-- Code Popup -->
+  <div class="code-popup" id="codePopup">
+    <div class="code-popup-content">
+      <div class="code-popup-header">
+        <h3>iTab Implementation Code</h3>
+        <span class="code-popup-close" id="codePopupClose">&times;</span>
+      </div>
+      <div class="code-popup-body">
+        <p>Copy this code to add the iTab system to your website:</p>
+        <pre class="code-block"><code>&lt;!-- iTab Bubble --&gt;
+&lt;div class="itab-bubble"&gt;
+  &lt;!-- Reaction Icon --&gt;
+  &lt;div id="itabReactionIcon" class="itab-icon"&gt;👍&lt;/div&gt;
+  &lt;!-- Info Icon --&gt;
+  &lt;div id="itabInfoIcon" class="itab-icon"&gt;ℹ️&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Reaction Popup --&gt;
+&lt;div id="itabReactionPopup" class="itab-popup"&gt;
+  &lt;h4&gt;What do you think?&lt;/h4&gt;
+  &lt;p&gt;Select your reaction:&lt;/p&gt;
+  &lt;button class="itab-reaction-btn" onclick="itabRecordReaction(0)"&gt;👍 This is helpful&lt;/button&gt;
+  &lt;button class="itab-reaction-btn" onclick="itabRecordReaction(1)"&gt;❤️ I love this&lt;/button&gt;
+  &lt;button class="itab-reaction-btn" onclick="itabRecordReaction(2)"&gt;🔥 This is awesome&lt;/button&gt;
+  &lt;button class="itab-reaction-btn" onclick="itabRecordReaction(3)"&gt;🎉 I would recommend this&lt;/button&gt;
+  &lt;div class="itab-close" onclick="itabClosePopup('itabReactionPopup')"&gt;Close&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Info Popup --&gt;
+&lt;div id="itabInfoPopup" class="itab-popup"&gt;
+  &lt;h4&gt;Reaction Statistics&lt;/h4&gt;
+  &lt;p&gt;See how people have reacted to this page:&lt;/p&gt;
+  &lt;div id="itabStatsContainer"&gt;
+    &lt;p&gt;No reactions yet&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class="itab-close" onclick="itabClosePopup('itabInfoPopup')"&gt;Close&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  /* iTab Bubble Styles */
+  .itab-bubble {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 100px;
+    height: 50px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 9999;
+  }
+
+  .itab-icon {
+    cursor: pointer;
+    font-size: 24px;
+    padding: 5px;
+    border-radius: 50%;
+  }
+
+  .itab-icon:hover {
+    background: #f0f0f0;
+  }
+
+  /* Popup Styles */
+  .itab-popup {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 250px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 9999;
+  }
+
+  .itab-popup h4 {
+    margin-top: 0;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .itab-popup p {
+    margin-top: 0;
+    margin-bottom: 15px;
+  }
+
+  /* Reaction Buttons */
+  .itab-reaction-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    margin: 8px 0;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .itab-reaction-btn:hover {
+    background: #f0f0f0;
+  }
+
+  /* Close Button */
+  .itab-close {
+    color: #0066cc;
+    text-decoration: underline;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  /* Confirmation Message */
+  .itab-confirmation {
+    position: fixed;
+    bottom: 75px;
+    right: 20px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    z-index: 10000;
+    font-size: 14px;
+  }
+&lt;/style&gt;
+
+&lt;script&gt;
+  // Track reaction counts
+  const itabReactions = [0, 0, 0, 0];
+  
+  // Labels for the reaction buttons
+  const itabReactionLabels = [
+    "👍 This is helpful",
+    "❤️ I love this",
+    "🔥 This is awesome",
+    "🎉 I would recommend this"
+  ];
+  
+  // Get DOM elements
+  const itabReactionIcon = document.getElementById('itabReactionIcon');
+  const itabInfoIcon = document.getElementById('itabInfoIcon');
+  const itabReactionPopup = document.getElementById('itabReactionPopup');
+  const itabInfoPopup = document.getElementById('itabInfoPopup');
+  const itabStatsContainer = document.getElementById('itabStatsContainer');
+  
+  // Show reaction popup when clicking the reaction icon
+  itabReactionIcon.addEventListener('click', function() {
+    itabReactionPopup.style.display = 'block';
+    itabInfoPopup.style.display = 'none';
+  });
+  
+  // Show info popup when clicking the info icon
+  itabInfoIcon.addEventListener('click', function() {
+    itabInfoPopup.style.display = 'block';
+    itabReactionPopup.style.display = 'none';
+    itabUpdateStats();
+  });
+  
+  // Close popup when clicking outside
+  document.addEventListener('click', function(event) {
+    const itabBubble = document.querySelector('.itab-bubble');
+    
+    if (!itabBubble.contains(event.target) && 
+        !itabReactionPopup.contains(event.target) && 
+        !itabInfoPopup.contains(event.target)) {
+      itabReactionPopup.style.display = 'none';
+      itabInfoPopup.style.display = 'none';
+    }
+  });
+  
+  // Close a specific popup
+  function itabClosePopup(popupId) {
+    document.getElementById(popupId).style.display = 'none';
+  }
+  
+  // Record a reaction
+  function itabRecordReaction(index) {
+    itabReactions[index]++;
+    itabClosePopup('itabReactionPopup');
+    
+    // Show confirmation message
+    const emoji = itabReactionLabels[index].split(' ')[0];
+    itabShowConfirmation(`Recorded: ${emoji}`);
+    
+    // Update stats
+    itabUpdateStats();
+  }
+  
+  // Show confirmation message
+  function itabShowConfirmation(message) {
+    const confirmation = document.createElement('div');
+    confirmation.className = 'itab-confirmation';
+    confirmation.textContent = message;
+    document.body.appendChild(confirmation);
+    
+    // Remove after 1.5 seconds
+    setTimeout(function() {
+      document.body.removeChild(confirmation);
+    }, 1500);
+  }
+  
+  // Update statistics in the info popup
+  function itabUpdateStats() {
+    const total = itabReactions.reduce((a, b) => a + b, 0);
+    
+    if (total === 0) {
+      itabStatsContainer.innerHTML = '<p>No reactions yet</p>';
+      return;
+    }
+    
+    let html = `<p><strong>Total reactions:</strong> ${total}</p>`;
+    
+    for (let i = 0; i < itabReactions.length; i++) {
+      if (itabReactions[i] > 0) {
+        html += `<p>${itabReactionLabels[i]}: ${itabReactions[i]}</p>`;
+      }
+    }
+    
+    itabStatsContainer.innerHTML = html;
+  }
+&lt;/script&gt;</code></pre>
+        <button class="copy-code-btn" id="copyCodeBtn">Copy Code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- iTab Bubble -->
+  <div class="itab-bubble">
+    <!-- Reaction Icon -->
+    <div id="itabReactionIcon" class="itab-icon">👍</div>
+    <!-- Info Icon -->
+    <div id="itabInfoIcon" class="itab-icon">ℹ️</div>
+  </div>
+
+  <!-- Reaction Popup -->
+  <div id="itabReactionPopup" class="itab-popup">
+    <h4>What do you think?</h4>
+    <p>Select your reaction:</p>
+    <button class="itab-reaction-btn" onclick="itabRecordReaction(0)">👍 This is helpful</button>
+    <button class="itab-reaction-btn" onclick="itabRecordReaction(1)">❤️ I love this</button>
+    <button class="itab-reaction-btn" onclick="itabRecordReaction(2)">🔥 This is awesome</button>
+    <button class="itab-reaction-btn" onclick="itabRecordReaction(3)">🎉 I would recommend this</button>
+    <div class="itab-close" onclick="itabClosePopup('itabReactionPopup')">Close</div>
+  </div>
+
+  <!-- Info Popup -->
+  <div id="itabInfoPopup" class="itab-popup">
+    <h4>Reaction Statistics</h4>
+    <p>See how people have reacted to this page:</p>
+    <div id="itabStatsContainer">
+      <p>No reactions yet</p>
+    </div>
+    <div class="itab-close" onclick="itabClosePopup('itabInfoPopup')">Close</div>
+  </div>
+
+  <script>
+    // iTab Reaction System JavaScript
+    
+    // Track reaction counts
+    const itabReactions = [0, 0, 0, 0];
+    
+    // Labels for the reaction buttons
+    const itabReactionLabels = [
+      "👍 This is helpful",
+      "❤️ I love this",
+      "🔥 This is awesome",
+      "🎉 I would recommend this"
+    ];
+    
+    // Get DOM elements
+    const itabReactionIcon = document.getElementById('itabReactionIcon');
+    const itabInfoIcon = document.getElementById('itabInfoIcon');
+    const itabReactionPopup = document.getElementById('itabReactionPopup');
+    const itabInfoPopup = document.getElementById('itabInfoPopup');
+    const itabStatsContainer = document.getElementById('itabStatsContainer');
+    
+    // Show reaction popup when clicking the reaction icon
+    itabReactionIcon.addEventListener('click', function() {
+      itabReactionPopup.style.display = 'block';
+      itabInfoPopup.style.display = 'none';
+    });
+    
+    // Show info popup when clicking the info icon
+    itabInfoIcon.addEventListener('click', function() {
+      itabInfoPopup.style.display = 'block';
+      itabReactionPopup.style.display = 'none';
+      itabUpdateStats();
+    });
+    
+    // Close popup when clicking outside
+    document.addEventListener('click', function(event) {
+      const itabBubble = document.querySelector('.itab-bubble');
+      
+      if (!itabBubble.contains(event.target) && 
+          !itabReactionPopup.contains(event.target) && 
+          !itabInfoPopup.contains(event.target)) {
+        itabReactionPopup.style.display = 'none';
+        itabInfoPopup.style.display = 'none';
+      }
+    });
+    
+    // Close a specific popup
+    function itabClosePopup(popupId) {
+      document.getElementById(popupId).style.display = 'none';
+    }
+    
+    // Record a reaction
+    function itabRecordReaction(index) {
+      itabReactions[index]++;
+      itabClosePopup('itabReactionPopup');
+      
+      // Show confirmation message
+      const emoji = itabReactionLabels[index].split(' ')[0];
+      itabShowConfirmation(`Recorded: ${emoji}`);
+      
+      // Update stats
+      itabUpdateStats();
+    }
+    
+    // Show confirmation message
+    function itabShowConfirmation(message) {
+      const confirmation = document.createElement('div');
+      confirmation.className = 'itab-confirmation';
+      confirmation.textContent = message;
+      document.body.appendChild(confirmation);
+      
+      // Remove after 1.5 seconds
+      setTimeout(function() {
+        document.body.removeChild(confirmation);
+      }, 1500);
+    }
+    
+    // Update statistics in the info popup
+    function itabUpdateStats() {
+      const total = itabReactions.reduce((a, b) => a + b, 0);
+      
+      if (total === 0) {
+        itabStatsContainer.innerHTML = '<p>No reactions yet</p>';
+        return;
+      }
+      
+      let html = `<p><strong>Total reactions:</strong> ${total}</p>`;
+      
+      for (let i = 0; i < itabReactions.length; i++) {
+        if (itabReactions[i] > 0) {
+          html += `<p>${itabReactionLabels[i]}: ${itabReactions[i]}</p>`;
+        }
+      }
+      
+      itabStatsContainer.innerHTML = html;
+    }
+
+    // Code Button and Popup
+    const codeButton = document.getElementById('codeButton');
+    const codePopup = document.getElementById('codePopup');
+    const codePopupClose = document.getElementById('codePopupClose');
+    const copyCodeBtn = document.getElementById('copyCodeBtn');
+    
+    // Show code popup
+    codeButton.addEventListener('click', function() {
+      codePopup.style.display = 'flex';
+    });
+    
+    // Close code popup
+    codePopupClose.addEventListener('click', function() {
+      codePopup.style.display = 'none';
+    });
+    
+    // Close code popup when clicking outside
+    codePopup.addEventListener('click', function(event) {
+      if (event.target === codePopup) {
+        codePopup.style.display = 'none';
+      }
+    });
+    
+    // Copy code button
+    copyCodeBtn.addEventListener('click', function() {
+      const codeBlock = document.querySelector('.code-block code');
+      const textArea = document.createElement('textarea');
+      textArea.value = codeBlock.textContent;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      this.textContent = 'Copied!';
+      setTimeout(() => {
+        this.textContent = 'Copy Code';
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
