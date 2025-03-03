@@ -1,3 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Minimal Code Generator Test</title>
+</head>
+<body>
+  <h1>Minimal Code Generator Test</h1>
+  <p>Type something below, then click "Generate Code" and "Copy Code".</p>
+
+  <label>Enter text to wrap in &lt;div&gt; tags:</label><br>
+  <input type="text" id="userInput" value="Hello world!"><br><br>
+
+  <button id="generateBtn">Generate Code</button>
+  <button id="copyBtn">Copy Code</button>
+
+  <h2>Preview:</h2>
+  <pre id="preview" style="background: #f4f4f4; padding: 10px;"></pre>
+
+  <h2>Code to Copy:</h2>
+  <textarea id="output" rows="5" cols="50"></textarea>
+
+  <script>
+    // When "Generate Code" is clicked:
+    document.getElementById("generateBtn").addEventListener("click", function() {
+      // Grab user input
+      let userText = document.getElementById("userInput").value;
+      // Build the code snippet
+      let code = "<div>" + userText + "</div>";
+      // Show it in the preview
+      document.getElementById("preview").innerText = code;
+      // Put it in the output textarea
+      document.getElementById("output").value = code;
+    });
+
+    // When "Copy Code" is clicked:
+    document.getElementById("copyBtn").addEventListener("click", function() {
+      let textArea = document.getElementById("output");
+      textArea.select();  // select all text
+      try {
+        let successful = document.execCommand("copy");
+        if (successful) {
+          alert("Code copied!");
+        } else {
+          alert("Unable to copy. Please copy manually.");
+        }
+      } catch (err) {
+        alert("Error copying code: " + err);
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+<br
+<br>
+<br>
 <!DOCTYPE html>
 <html lang="en">
 <head>
