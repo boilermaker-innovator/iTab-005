@@ -88,11 +88,6 @@
 </div>
 
 </body>
-</html>
-
-<br
-<br>
-<br>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -148,12 +143,9 @@
       background: #eee;
     }
 
-    /* Reaction Popup (for 👍) */
-    .reaction-popup {
+    /* Common popup styles */
+    .popup {
       position: fixed;
-      bottom: 80px; 
-      right: 20px; 
-      width: 250px;
       background: #fff;
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -161,24 +153,43 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       display: none;
       z-index: 9999;
+      max-width: 280px;
+      width: 85%;
     }
 
-    /* Info Popup (for ℹ️) */
-    .info-popup {
-      position: fixed;
-      bottom: 80px;
-      right: 290px; /* shift left so it doesn't overlap the reaction popup */
-      width: 220px;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 9999;
+    /* Mobile-friendly positioning for both popups */
+    @media (max-width: 768px) {
+      .popup {
+        right: 20px;
+        left: auto;
+        width: 80%;
+        max-width: 280px;
+      }
+      
+      /* Stack popups vertically on mobile */
+      .reaction-popup {
+        bottom: 80px;
+      }
+      
+      .info-popup {
+        bottom: 80px; /* Same position as reaction popup */
+      }
     }
 
-    /* Close link inside popups (optional) */
+    /* Desktop positioning */
+    @media (min-width: 769px) {
+      .reaction-popup {
+        bottom: 80px;
+        right: 20px;
+      }
+      
+      .info-popup {
+        bottom: 80px;
+        right: 20px;
+      }
+    }
+
+    /* Close link inside popups */
     .close-link {
       display: inline-block;
       margin-top: 10px;
@@ -209,9 +220,9 @@
   <div class="demo-content">
     <h2>Single Bubble (👍 + ℹ️) with Reaction Counters</h2>
     <p>
-      - Click the **thumbs-up** icon to open the **reaction** popup.<br/>
+      - Click the <strong>thumbs-up</strong> icon to open the <strong>reaction</strong> popup.<br/>
       - Select one of the 4 reaction buttons (it will auto-close).<br/>
-      - Then click the **info** icon to see **the total count** and a breakdown of each reaction.
+      - Then click the <strong>info</strong> icon to see <strong>the total count</strong> and a breakdown of each reaction.
     </p>
   </div>
 
@@ -224,7 +235,7 @@
   </div>
 
   <!-- Reaction Popup (Thumbs-Up) -->
-  <div id="reactionPopup" class="reaction-popup">
+  <div id="reactionPopup" class="popup reaction-popup">
     <h4>My iTab Title</h4>
     <p>Select your reaction:</p>
     <!-- Each comment is now a button -->
@@ -237,7 +248,7 @@
   </div>
 
   <!-- Info Popup (ℹ️) -->
-  <div id="infoPopup" class="info-popup">
+  <div id="infoPopup" class="popup info-popup">
     <h4>Reaction Stats</h4>
     <!-- We'll dynamically update this with the counts -->
     <div id="infoData">
@@ -277,15 +288,46 @@
       hidePopup('reactionPopup');
       // Update the Info popup data (so it's ready if user opens it next)
       updateInfoPopup();
+      
+      // Show a brief confirmation message
+      showConfirmation(`Recorded: ${reactionLabels[index].split(' ')[0]}`);
+    }
+
+    // Show a brief confirmation message
+    function showConfirmation(message) {
+      const confirmation = document.createElement('div');
+      confirmation.textContent = message;
+      confirmation.style.position = 'fixed';
+      confirmation.style.bottom = '75px';
+      confirmation.style.right = '20px';
+      confirmation.style.background = 'rgba(0,0,0,0.7)';
+      confirmation.style.color = 'white';
+      confirmation.style.padding = '8px 12px';
+      confirmation.style.borderRadius = '4px';
+      confirmation.style.zIndex = '10000';
+      document.body.appendChild(confirmation);
+      
+      // Remove after 1.5 seconds
+      setTimeout(() => {
+        document.body.removeChild(confirmation);
+      }, 1500);
     }
 
     // Show the current counts (including total) in the Info popup
     function updateInfoPopup() {
       let total = reactionCounts.reduce((a, b) => a + b, 0);
       let html = `<p><strong>Total Reactions:</strong> ${total}</p>`;
-      for (let i = 0; i < reactionCounts.length; i++) {
-        html += `<p>${reactionLabels[i]}: ${reactionCounts[i]}</p>`;
+      
+      if (total > 0) {
+        for (let i = 0; i < reactionCounts.length; i++) {
+          if (reactionCounts[i] > 0) {
+            html += `<p>${reactionLabels[i]}: ${reactionCounts[i]}</p>`;
+          }
+        }
+      } else {
+        html = "<p>No reactions yet.</p>";
       }
+      
       document.getElementById("infoData").innerHTML = html;
     }
 
@@ -309,6 +351,22 @@
     function hidePopup(popupId) {
       document.getElementById(popupId).style.display = 'none';
     }
+
+    // Check for clicks outside popups to close them
+    document.addEventListener('click', function(event) {
+      const bubble = document.querySelector('.bubble');
+      const reactionPopup = document.getElementById('reactionPopup');
+      const infoPopup = document.getElementById('infoPopup');
+      
+      // If click is outside bubble and both popups
+      if (!bubble.contains(event.target) && 
+          !reactionPopup.contains(event.target) && 
+          !infoPopup.contains(event.target)) {
+        // Close both popups
+        hidePopup('reactionPopup');
+        hidePopup('infoPopup');
+      }
+    });
   </script>
 </body>
 </html>
